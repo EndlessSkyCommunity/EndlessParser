@@ -1,5 +1,7 @@
+import inspect
 from typing import List, Tuple, Iterable
 
+from endlessparser import datatypes
 from endlessparser.datatypes import Node
 
 
@@ -31,6 +33,14 @@ def _split_respect_quotes(s: str) -> Iterable[str]:
     yield buffer
 
 
+def _create_node(node_type: str, tokens: List[str]) -> Node:
+    candidates = inspect.getmembers(datatypes, inspect.isclass)
+    for name, clazz in candidates:
+        if hasattr(clazz, "node_type") and clazz.node_type == node_type:
+            return clazz(node_type, tokens, [])
+    return Node(node_type, tokens, [])
+
+
 def parse(text: str) -> List[Node]:
     lines = []
     for line in text.splitlines():
@@ -46,30 +56,33 @@ def _read_nodes(lines: List[Tuple[int, str]]) -> List[Node]:
     base_indent_level = lines[0][0]
 
     while len(lines) > 0:
+        # Lines are popped from the list once they have been processed.
+        # That way we can always rely on lines[0] being the first unprocessed one.
         indent_level, line = lines[0]
+
         if len(line) == 0 or line.isspace() or line.startswith("#"):
             del lines[0]
             continue
+
         if indent_level == base_indent_level:
             slices = line.split(" ")
             node_type = slices[0]
-            tokens = (
-                [] if len(slices) == 1 else _split_respect_quotes(" ".join(slices[1:]))
+            tokens = list(
+                (
+                    []
+                    if len(slices) == 1
+                    else _split_respect_quotes(" ".join(slices[1:]))
+                )
             )  # prevent list index out of range errors
-            nodes.append(Node(node_type, tokens, [],))
-            # Remove processed lines, so we always know at which line are even when doing recursive calls
+            nodes.append(_create_node(node_type, tokens))
             del lines[0]
+
         elif indent_level > base_indent_level:
             #  Indented block - call the function again, it will read lines until it hits the next elif
             nodes[-1].children += _read_nodes(lines)
+
         elif indent_level < base_indent_level:
             # End of our indentation level - return to the caller
             break
+
     return nodes
-
-
-s = """
-
-"""
-n = parse(s)
-print(n)
