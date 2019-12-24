@@ -2,6 +2,13 @@ from dataclasses import dataclass
 from typing import List, Iterable
 
 
+def _indent(s: str) -> str:
+    buffer = ""
+    for line in s.splitlines():
+        buffer += "\t%s\n" % line
+    return buffer.rstrip()
+
+
 @dataclass
 class Node:
     node_type: str
@@ -16,6 +23,16 @@ class Node:
         for child in self.children:
             if child.node_type == child_type:
                 yield child
+
+    def write(self) -> str:
+        buffer = self.node_type
+        if self.tokens and not len(self.tokens) == 0:
+            buffer += " " + " ".join(self.tokens)
+
+        for child in self.children:
+            buffer += "\n" + _indent(child.write())
+
+        return buffer
 
 
 class NamedNode(Node):
