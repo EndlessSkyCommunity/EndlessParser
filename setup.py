@@ -8,6 +8,6 @@ setup(
     author="MCOfficer",
     author_email="mcofficer@gmx.de",
     license="GPL3",
-    packages=["endlessparser"],
+    packages=["endlessparser", "endlessparser.datatypes"],
     zip_safe=False,
 )
