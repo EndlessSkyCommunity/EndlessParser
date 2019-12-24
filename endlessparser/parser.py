@@ -1,6 +1,5 @@
 import inspect
 from typing import List, Tuple, Iterable
-
 from endlessparser import datatypes
 from endlessparser.datatypes import Node
 
@@ -44,7 +43,8 @@ def _create_node(node_type: str, tokens: List[str]) -> Node:
 def parse(text: str) -> List[Node]:
     lines = []
     for line in text.splitlines():
-        lines.append((_indent_level(line), line.strip()))
+        if len(line) > 0 and not line.isspace() and not line.strip().startswith("#"):
+            lines.append((_indent_level(line), line.strip()))
     return _read_nodes(lines)
 
 
@@ -59,10 +59,6 @@ def _read_nodes(lines: List[Tuple[int, str]]) -> List[Node]:
         # Lines are popped from the list once they have been processed.
         # That way we can always rely on lines[0] being the first unprocessed one.
         indent_level, line = lines[0]
-
-        if len(line) == 0 or line.isspace() or line.startswith("#"):
-            del lines[0]
-            continue
 
         if indent_level == base_indent_level:
             slices = line.split(" ")
