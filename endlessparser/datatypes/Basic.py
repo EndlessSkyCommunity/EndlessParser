@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Iterable
+from typing import List, Iterable, Type, TypeVar
 
 
 def _indent(s: str) -> str:
@@ -24,6 +24,21 @@ class Node:
             if child.node_type == child_type:
                 yield child
 
+    T = TypeVar("T", bound="Node")
+
+    def _find_child_by_class(self, clazz: Type[T]) -> T:
+        for child in self._find_children(clazz):
+            return child
+
+    def _find_children_by_class(self, clazz: Type[T]) -> Iterable[T]:
+        for child in self.children:
+            if child.__class__ == clazz:
+                yield child
+
+    def _get_tokens(self, child: "Node") -> str:
+        if child and child.tokens and not len(child.tokens) == 0:
+            return " ".join(child.tokens)
+
     def write(self) -> str:
         buffer = self.node_type
         if self.tokens and not len(self.tokens) == 0:
@@ -35,13 +50,11 @@ class Node:
         return buffer
 
 
-class NamedNode(Node):
+class HasName(Node):
     def name(self) -> str:
         return " ".join(self.tokens)
 
 
-class SpriteNode(Node):
+class HasSprite(Node):
     def sprite(self) -> str:
-        child = self._find_child("sprite")
-        if child:
-            return " ".join(child.tokens)
+        return self._get_tokens(self._find_child("sprite"))
