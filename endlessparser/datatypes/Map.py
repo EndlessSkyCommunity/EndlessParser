@@ -5,13 +5,13 @@ from endlessparser.datatypes import Node, HasName, HasSprite, HasMusic
 
 class HasPosition(Node):
     def position(self) -> Optional[Tuple[float, float]]:
-        pos = self._find_child("pos")
-        if pos:
-            return float(pos.tokens[0]), float(pos.tokens[1])
+        child = self._find_child("pos")
+        if child and len(child.tokens) >= 2:
+            return float(child.tokens[0]), float(child.tokens[1])
 
 
 class HasObjects(Node):
-    def objects(self) -> Optional[Iterable["ObjectNode"]]:
+    def objects(self) -> Iterable["ObjectNode"]:
         return self._find_children_by_class(ObjectNode)
 
 
@@ -44,11 +44,11 @@ class SystemNode(HasName, HasPosition, HasObjects, HasMusic):
         child = self._find_child("government")
         return child.tokens_as_string() if child else None
 
-    def habitable(self) -> float:
+    def habitable(self) -> Optional[float]:
         child = self._find_child("habitable")
         return float(child.tokens_as_string()) if child else None
 
-    def haze(self):
+    def haze(self) -> Optional[str]:
         child = self._find_child("haze")
         return child.tokens_as_string() if child else None
 
@@ -73,15 +73,15 @@ class SystemNode(HasName, HasPosition, HasObjects, HasMusic):
 class ObjectNode(HasName, HasSprite, HasObjects, Node):
     node_type = "object"
 
-    def distance(self) -> float:
+    def distance(self) -> Optional[float]:
         child = self._find_child("distance")
         return float(child.tokens_as_string()) if child else None
 
-    def offset(self) -> float:
+    def offset(self) -> Optional[float]:
         child = self._find_child("offset")
         return float(child.tokens_as_string()) if child else None
 
-    def period(self) -> float:
+    def period(self) -> Optional[float]:
         child = self._find_child("period")
         return float(child.tokens_as_string()) if child else None
 

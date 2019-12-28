@@ -50,7 +50,7 @@ class Node:
 
 
 class HasName(Node):
-    def name(self) -> Optional[str]:
+    def name(self) -> str:
         return self.tokens_as_string()
 
 
