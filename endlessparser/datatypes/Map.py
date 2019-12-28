@@ -1,6 +1,6 @@
 from typing import Tuple, List, Dict, Iterable, Optional
 
-from endlessparser.datatypes import Node, HasName, HasSprite
+from endlessparser.datatypes import Node, HasName, HasSprite, HasMusic
 
 
 class HasPosition(Node):
@@ -19,7 +19,7 @@ class GalaxyNode(HasName, HasSprite, HasPosition):
     node_type = "galaxy"
 
 
-class SystemNode(HasName, HasPosition, HasObjects):
+class SystemNode(HasName, HasPosition, HasObjects, HasMusic):
     node_type = "system"
 
     def government(self) -> Optional[str]:
@@ -61,6 +61,11 @@ class SystemNode(HasName, HasPosition, HasObjects):
                 d[child.tokens[0]] = float(child.tokens[1])
         return d
 
+    def haze(self):
+        child = self._find_child("haze")
+        if child:
+            return self._get_tokens(child)
+
 
 class ObjectNode(HasName, HasSprite, HasObjects, Node):
     node_type = "object"
@@ -76,6 +81,6 @@ class ObjectNode(HasName, HasSprite, HasObjects, Node):
             return float(self._get_tokens(child))
 
 
-class PlanetNode(HasName):
+class PlanetNode(HasName, HasMusic):
     node_type = "planet"
     # TODO

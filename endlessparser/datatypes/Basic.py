@@ -57,4 +57,13 @@ class HasName(Node):
 
 class HasSprite(Node):
     def sprite(self) -> Optional[str]:
-        return self._get_tokens(self._find_child("sprite"))
+        child = self._find_child("sprite")
+        if child:
+            return self._get_tokens(child)
+
+
+class HasMusic(Node):
+    def music(self) -> Optional[str]:
+        child = self._find_child("music")
+        if child:
+            return self._get_tokens(child)
