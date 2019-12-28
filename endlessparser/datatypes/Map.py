@@ -110,9 +110,7 @@ class PlanetNode(HasName, HasMusic, HasDescription, HasGovernment):
         return [child.tokens_as_string() for child in self._find_children("outfitter")]
 
     def required_reputation(self) -> Optional[float]:
-        child = self._find_child(
-            "required reputation"
-        )  # TODO: this won't work yet, because quotes
+        child = self._find_child("required reputation")
         return child.tokens_as_string() if child else None
 
     def security(self) -> Optional[float]:

@@ -25,7 +25,7 @@ def _split_respect_quotes(s: str) -> Iterable[str]:
 
         if char == active_quote:
             active_quote = None
-        elif char in quotes:
+        elif char in QUOTES:
             active_quote = char
 
         buffer += char
@@ -62,15 +62,9 @@ def _read_nodes(lines: List[Tuple[int, str]]) -> List[Node]:
         indent_level, line = lines[0]
 
         if indent_level == base_indent_level:
-            slices = line.split(" ")
+            slices = list(_split_respect_quotes(line))
             node_type = slices[0]
-            tokens = list(
-                (
-                    []
-                    if len(slices) == 1
-                    else _split_respect_quotes(" ".join(slices[1:]))
-                )
-            )  # prevent list index out of range errors
+            tokens = list([] if len(slices) == 1 else slices[1:])
             nodes.append(_create_node(node_type, tokens))
             del lines[0]
 
