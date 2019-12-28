@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Iterable, Type, TypeVar, Optional
 
-from endlessparser.parse import QUOTES
+from endlessparser.globals import QUOTES
 
 
 def _indent(s: str) -> str:

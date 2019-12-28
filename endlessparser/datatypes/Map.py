@@ -6,8 +6,9 @@ from endlessparser.datatypes import (
     HasSprite,
     HasMusic,
     HasDescription,
-    QUOTES,
 )
+
+from endlessparser.globals import QUOTES
 
 
 class HasPosition(Node):

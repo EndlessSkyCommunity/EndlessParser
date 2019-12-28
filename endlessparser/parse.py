@@ -1,9 +1,6 @@
 import inspect
 from typing import List, Tuple, Iterable
-from endlessparser import datatypes
-from endlessparser.datatypes import Node
-
-QUOTES = ('"', "'", "`")
+from endlessparser import datatypes, Node, QUOTES
 
 
 def _indent_level(s: str) -> int:
