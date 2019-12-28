@@ -24,13 +24,13 @@ class Node:
             if child.node_type == child_type:
                 yield child
 
-    T = TypeVar("T", bound="Node")
+    N = TypeVar("N", bound="Node")
 
-    def _find_child_by_class(self, clazz: Type[T]) -> Optional[T]:
+    def _find_child_by_class(self, clazz: Type[N]) -> Optional[N]:
         for child in self._find_children_by_class(clazz):
             return child
 
-    def _find_children_by_class(self, clazz: Type[T]) -> Iterable[T]:
+    def _find_children_by_class(self, clazz: Type[N]) -> Iterable[N]:
         for child in self.children:
             if child.__class__ == clazz:
                 yield child
