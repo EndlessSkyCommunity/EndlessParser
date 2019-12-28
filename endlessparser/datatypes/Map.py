@@ -118,12 +118,12 @@ class PlanetNode(HasName, HasMusic, HasDescription, HasGovernment):
         child = self._find_child("security")
         return float(child.tokens_as_string()) if child else None
 
-    def shipyard(self) -> List[str]:
-        return [child.tokens_as_string() for child in self._find_children()]
+    def shipyards(self) -> List[str]:
+        return [child.tokens_as_string() for child in self._find_children("shipyard")]
 
     def spaceport(self) -> str:
         buffer = ""
-        for child in self._find_children("description"):
+        for child in self._find_children("spaceport"):
             s = child.tokens_as_string()
             if s[0] in QUOTES:
                 s = s.strip(s[0])
