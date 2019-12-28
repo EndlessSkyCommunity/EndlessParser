@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from endlessparser import parser
+from endlessparser import parse
 
 
 class Test(TestCase):
@@ -17,7 +17,7 @@ class Test(TestCase):
             (4, "				4 tabs"),
         ]
         for expected, s in cases:
-            assert expected == parser._indent_level(s)
+            assert expected == parse._indent_level(s)
 
     def test__split_respect_quotes(self):
         cases = [
@@ -33,4 +33,4 @@ class Test(TestCase):
             (["planet", '"Ablub\'s Invention"'], 'planet "Ablub\'s Invention"'),
         ]
         for expected, s in cases:
-            assert expected == list(parser._split_respect_quotes(s))
+            assert expected == list(parse._split_respect_quotes(s))

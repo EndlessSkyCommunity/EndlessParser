@@ -48,13 +48,6 @@ def parse(text: str) -> List[Node]:
     return _read_nodes(lines)
 
 
-def write(nodes: List[Node]) -> str:
-    buffer = ""
-    for node in nodes:
-        buffer += node.write() + "\n\n"
-    return buffer
-
-
 def _read_nodes(lines: List[Tuple[int, str]]) -> List[Node]:
     if len(lines) == 0:
         return []  # JIC
