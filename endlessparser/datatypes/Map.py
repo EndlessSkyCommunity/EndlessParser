@@ -1,18 +1,17 @@
-from dataclasses import dataclass
-from typing import Tuple, List, Dict, Iterable
+from typing import Tuple, List, Dict, Iterable, Optional
 
 from endlessparser.datatypes import Node, HasName, HasSprite
 
 
 class HasPosition(Node):
-    def position(self) -> Tuple[float, float]:
+    def position(self) -> Optional[Tuple[float, float]]:
         pos = self._find_child("pos")
         if pos:
             return float(pos.tokens[0]), float(pos.tokens[1])
 
 
 class HasObjects(Node):
-    def objects(self) -> Iterable["ObjectNode"]:
+    def objects(self) -> Optional[Iterable["ObjectNode"]]:
         return self._find_children_by_class(ObjectNode)
 
 
@@ -23,13 +22,13 @@ class GalaxyNode(HasName, HasSprite, HasPosition):
 class SystemNode(HasName, HasPosition, HasObjects):
     node_type = "system"
 
-    def government(self) -> str:
+    def government(self) -> Optional[str]:
         return self._get_tokens(self._find_child("government"))
 
     def habitable(self) -> float:
         return float(self._get_tokens(self._find_child("habitable")))
 
-    def belt(self) -> float:
+    def belt(self) -> Optional[float]:
         return float(self._get_tokens(self._find_child("belt")))
 
     def links(self) -> List[str]:
@@ -44,19 +43,22 @@ class SystemNode(HasName, HasPosition, HasObjects):
     def minables(self) -> Dict[str, Tuple[float, float]]:
         d = {}
         for child in self._find_children("minables"):
-            d[child.tokens[0]] = (float(child.tokens[1]), float(child.tokens[2]))
+            if len(child.tokens) >= 3:
+                d[child.tokens[0]] = (float(child.tokens[1]), float(child.tokens[2]))
         return d
 
     def trades(self) -> Dict[str, float]:
         d = {}
         for child in self._find_children("trade"):
-            d[child.tokens[0]] = float(child.tokens[1])
+            if len(child.tokens) >= 2:
+                d[child.tokens[0]] = float(child.tokens[1])
         return d
 
     def fleets(self) -> Dict[str, float]:
         d = {}
         for child in self._find_children("fleet"):
-            d[child.tokens[0]] = float(child.tokens[1])
+            if len(child.tokens) >= 2:
+                d[child.tokens[0]] = float(child.tokens[1])
         return d
 
 
