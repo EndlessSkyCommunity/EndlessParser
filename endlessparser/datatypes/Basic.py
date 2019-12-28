@@ -19,7 +19,7 @@ class Node:
         for child in self._find_children(child_type):
             return child
 
-    def _find_children(self, child_type: str) -> Optional[Iterable["Node"]]:
+    def _find_children(self, child_type: str) -> Iterable["Node"]:
         for child in self.children:
             if child.node_type == child_type:
                 yield child
@@ -30,14 +30,13 @@ class Node:
         for child in self._find_children_by_class(clazz):
             return child
 
-    def _find_children_by_class(self, clazz: Type[T]) -> Optional[Iterable[T]]:
+    def _find_children_by_class(self, clazz: Type[T]) -> Iterable[T]:
         for child in self.children:
             if child.__class__ == clazz:
                 yield child
 
-    def _get_tokens(self, child: "Node") -> Optional[str]:
-        if child and child.tokens and not len(child.tokens) == 0:
-            return " ".join(child.tokens)
+    def tokens_as_string(self) -> Optional[str]:
+        return " ".join(self.tokens) if self.tokens else ""
 
     def write(self) -> str:
         buffer = self.node_type
@@ -52,18 +51,16 @@ class Node:
 
 class HasName(Node):
     def name(self) -> Optional[str]:
-        return self._get_tokens(self)
+        return self.tokens_as_string()
 
 
 class HasSprite(Node):
     def sprite(self) -> Optional[str]:
         child = self._find_child("sprite")
-        if child:
-            return self._get_tokens(child)
+        return child.tokens_as_string() if child else None
 
 
 class HasMusic(Node):
     def music(self) -> Optional[str]:
         child = self._find_child("music")
-        if child:
-            return self._get_tokens(child)
+        return child.tokens_as_string() if child else None

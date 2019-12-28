@@ -23,21 +23,25 @@ class SystemNode(HasName, HasPosition, HasObjects, HasMusic):
     node_type = "system"
 
     def government(self) -> Optional[str]:
-        return self._get_tokens(self._find_child("government"))
+        child = self._find_child("government")
+        return child.tokens_as_string() if child else None
 
     def habitable(self) -> float:
-        return float(self._get_tokens(self._find_child("habitable")))
+        child = self._find_child("habitable")
+        return float(child.tokens_as_string()) if child else None
 
     def belt(self) -> Optional[float]:
-        return float(self._get_tokens(self._find_child("belt")))
+        child = self._find_child("belt")
+        return float(child.tokens_as_string()) if child else None
 
     def links(self) -> List[str]:
-        return [self._get_tokens(n) for n in self._find_children("link")]
+        return [child.tokens_as_string() for child in self._find_children("link")]
 
     def asteroids(self) -> Dict[str, Tuple[float, float]]:
         d = {}
         for child in self._find_children("asteroids"):
-            d[child.tokens[0]] = (float(child.tokens[1]), float(child.tokens[2]))
+            if len(child.tokens) >= 3:
+                d[child.tokens[0]] = (float(child.tokens[1]), float(child.tokens[2]))
         return d
 
     def minables(self) -> Dict[str, Tuple[float, float]]:
@@ -63,8 +67,7 @@ class SystemNode(HasName, HasPosition, HasObjects, HasMusic):
 
     def haze(self):
         child = self._find_child("haze")
-        if child:
-            return self._get_tokens(child)
+        return child.tokens_as_string() if child else None
 
 
 class ObjectNode(HasName, HasSprite, HasObjects, Node):
@@ -72,13 +75,11 @@ class ObjectNode(HasName, HasSprite, HasObjects, Node):
 
     def distance(self) -> float:
         child = self._find_child("distance")
-        if child:
-            return float(self._get_tokens(child))
+        return float(child.tokens_as_string()) if child else None
 
     def period(self) -> float:
         child = self._find_child("period")
-        if child:
-            return float(self._get_tokens(child))
+        return float(child.tokens_as_string()) if child else None
 
 
 class PlanetNode(HasName, HasMusic):
