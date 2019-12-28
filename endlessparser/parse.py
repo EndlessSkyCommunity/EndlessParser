@@ -3,13 +3,14 @@ from typing import List, Tuple, Iterable
 from endlessparser import datatypes
 from endlessparser.datatypes import Node
 
+QUOTES = ('"', "'", "`")
+
 
 def _indent_level(s: str) -> int:
     return len(s) - len(s.lstrip())
 
 
 def _split_respect_quotes(s: str) -> Iterable[str]:
-    quotes = ('"', "'", "`")
     active_quote = None
     buffer = ""
 

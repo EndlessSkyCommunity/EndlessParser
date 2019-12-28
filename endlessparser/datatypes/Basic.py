@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import List, Iterable, Type, TypeVar, Optional
 
+from endlessparser.parse import QUOTES
+
 
 def _indent(s: str) -> str:
     buffer = ""
@@ -64,3 +66,14 @@ class HasMusic(Node):
     def music(self) -> Optional[str]:
         child = self._find_child("music")
         return child.tokens_as_string() if child else None
+
+
+class HasDescription(Node):
+    def description(self) -> [str]:
+        buffer = ""
+        for child in self._find_children("description"):
+            s = child.tokens_as_string()
+            if s[0] in QUOTES:
+                s = s.strip(s[0])
+            buffer += s + "\n"
+        return buffer.rstrip("\n")

@@ -1,6 +1,13 @@
 from typing import Tuple, List, Dict, Iterable, Optional
 
-from endlessparser.datatypes import Node, HasName, HasSprite, HasMusic
+from endlessparser.datatypes import (
+    Node,
+    HasName,
+    HasSprite,
+    HasMusic,
+    HasDescription,
+    QUOTES,
+)
 
 
 class HasPosition(Node):
@@ -15,11 +22,17 @@ class HasObjects(Node):
         return self._find_children_by_class(ObjectNode)
 
 
+class HasGovernment(Node):
+    def government(self) -> Optional[str]:
+        child = self._find_child("government")
+        return child.tokens_as_string() if child else None
+
+
 class GalaxyNode(HasName, HasSprite, HasPosition):
     node_type = "galaxy"
 
 
-class SystemNode(HasName, HasPosition, HasObjects, HasMusic):
+class SystemNode(HasName, HasPosition, HasObjects, HasMusic, HasGovernment):
     node_type = "system"
 
     def asteroids(self) -> Dict[str, Tuple[float, float]]:
@@ -39,10 +52,6 @@ class SystemNode(HasName, HasPosition, HasObjects, HasMusic):
             if len(child.tokens) >= 2:
                 d[child.tokens[0]] = float(child.tokens[1])
         return d
-
-    def government(self) -> Optional[str]:
-        child = self._find_child("government")
-        return child.tokens_as_string() if child else None
 
     def habitable(self) -> Optional[float]:
         child = self._find_child("habitable")
@@ -86,6 +95,42 @@ class ObjectNode(HasName, HasSprite, HasObjects, Node):
         return float(child.tokens_as_string()) if child else None
 
 
-class PlanetNode(HasName, HasMusic):
+class PlanetNode(HasName, HasMusic, HasDescription, HasGovernment):
     node_type = "planet"
-    # TODO
+
+    def attributes(self) -> Optional[List[str]]:
+        child = self._find_child("attributes")
+        return child.tokens if child else None
+
+    def bribe(self) -> Optional[float]:
+        child = self._find_child("bribe")
+        return float(child.tokens_as_string()) if child else None
+
+    def outfitters(self) -> List[str]:
+        return [child.tokens_as_string() for child in self._find_children("outfitter")]
+
+    def required_reputation(self) -> Optional[float]:
+        child = self._find_child(
+            "required reputation"
+        )  # TODO: this won't work yet, because quotes
+        return child.tokens_as_string() if child else None
+
+    def security(self) -> Optional[float]:
+        child = self._find_child("security")
+        return float(child.tokens_as_string()) if child else None
+
+    def shipyard(self) -> List[str]:
+        return [child.tokens_as_string() for child in self._find_children()]
+
+    def spaceport(self) -> str:
+        buffer = ""
+        for child in self._find_children("description"):
+            s = child.tokens_as_string()
+            if s[0] in QUOTES:
+                s = s.strip(s[0])
+            buffer += s + "\n"
+        return buffer.rstrip("\n")
+
+    def tribute(self) -> float:
+        child = self._find_child("tribute")
+        return float(child.tokens_as_string()) if child else None
