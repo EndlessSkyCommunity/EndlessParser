@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Iterable, Type, TypeVar, Optional
+from typing import List, Iterable, Type, TypeVar, Optional, Callable, Any
 
 from endlessparser.globals import QUOTES
 
@@ -37,6 +37,13 @@ class Node:
             if child.__class__ == clazz:
                 yield child
 
+    def _child_tokens_as_type(
+        self, child_type: str, format_to: Callable = lambda x: str(x)
+    ) -> Optional[Any]:
+        child = self._find_child(child_type)
+        if child:
+            return format_to(child.tokens_as_string())
+
     def tokens_as_string(self) -> Optional[str]:
         return " ".join(self.tokens) if self.tokens else ""
 
@@ -58,14 +65,12 @@ class HasName(Node):
 
 class HasSprite(Node):
     def sprite(self) -> Optional[str]:
-        child = self._find_child("sprite")
-        return child.tokens_as_string() if child else None
+        return self._child_tokens_as_type("sprite")
 
 
 class HasMusic(Node):
     def music(self) -> Optional[str]:
-        child = self._find_child("music")
-        return child.tokens_as_string() if child else None
+        return self._child_tokens_as_type("music")
 
 
 class HasDescription(Node):

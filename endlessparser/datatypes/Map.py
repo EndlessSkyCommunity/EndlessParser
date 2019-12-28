@@ -25,8 +25,7 @@ class HasObjects(Node):
 
 class HasGovernment(Node):
     def government(self) -> Optional[str]:
-        child = self._find_child("government")
-        return child.tokens_as_string() if child else None
+        return self._child_tokens_as_type("government")
 
 
 class GalaxyNode(HasName, HasSprite, HasPosition):
@@ -44,8 +43,7 @@ class SystemNode(HasName, HasPosition, HasObjects, HasMusic, HasGovernment):
         return d
 
     def belt(self) -> Optional[float]:
-        child = self._find_child("belt")
-        return float(child.tokens_as_string()) if child else None
+        return self._child_tokens_as_type("belt", lambda x: float(x))
 
     def fleets(self) -> Dict[str, float]:
         d = {}
@@ -55,12 +53,10 @@ class SystemNode(HasName, HasPosition, HasObjects, HasMusic, HasGovernment):
         return d
 
     def habitable(self) -> Optional[float]:
-        child = self._find_child("habitable")
-        return float(child.tokens_as_string()) if child else None
+        return self._child_tokens_as_type("habitable", lambda x: float(x))
 
     def haze(self) -> Optional[str]:
-        child = self._find_child("haze")
-        return child.tokens_as_string() if child else None
+        return self._child_tokens_as_type("haze")
 
     def links(self) -> List[str]:
         return [child.tokens_as_string() for child in self._find_children("link")]
@@ -84,16 +80,13 @@ class ObjectNode(HasName, HasSprite, HasObjects, Node):
     node_type = "object"
 
     def distance(self) -> Optional[float]:
-        child = self._find_child("distance")
-        return float(child.tokens_as_string()) if child else None
+        return self._child_tokens_as_type("distance", lambda x: float(x))
 
     def offset(self) -> Optional[float]:
-        child = self._find_child("offset")
-        return float(child.tokens_as_string()) if child else None
+        return self._child_tokens_as_type("offset", lambda x: float(x))
 
     def period(self) -> Optional[float]:
-        child = self._find_child("period")
-        return float(child.tokens_as_string()) if child else None
+        return self._child_tokens_as_type("period", lambda x: float(x))
 
 
 class PlanetNode(HasName, HasMusic, HasDescription, HasGovernment):
@@ -104,19 +97,16 @@ class PlanetNode(HasName, HasMusic, HasDescription, HasGovernment):
         return child.tokens if child else None
 
     def bribe(self) -> Optional[float]:
-        child = self._find_child("bribe")
-        return float(child.tokens_as_string()) if child else None
+        return self._child_tokens_as_type("bribe", lambda x: float(x))
 
     def outfitters(self) -> List[str]:
         return [child.tokens_as_string() for child in self._find_children("outfitter")]
 
     def required_reputation(self) -> Optional[float]:
-        child = self._find_child("required reputation")
-        return child.tokens_as_string() if child else None
+        return self._child_tokens_as_type("required reputation")
 
     def security(self) -> Optional[float]:
-        child = self._find_child("security")
-        return float(child.tokens_as_string()) if child else None
+        return self._child_tokens_as_type("security", lambda x: float(x))
 
     def shipyards(self) -> List[str]:
         return [child.tokens_as_string() for child in self._find_children("shipyard")]
@@ -130,6 +120,5 @@ class PlanetNode(HasName, HasMusic, HasDescription, HasGovernment):
             buffer += s + "\n"
         return buffer.rstrip("\n")
 
-    def tribute(self) -> float:
-        child = self._find_child("tribute")
-        return float(child.tokens_as_string()) if child else None
+    def tribute(self) -> Optional[float]:
+        return self._child_tokens_as_type("tribute", lambda x: float(x))
