@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="EndlessParser",
-    version="0.2",
+    version="0.3",
     description="A robust Parser for Endless Sky's data files.",
     long_description=long_description,
     long_description_content_type="text/markdown",
