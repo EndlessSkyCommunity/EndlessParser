@@ -1,10 +1,10 @@
 # Compiled python modules.
 *.pyc
 
-# Setuptools distribution folder.
+# Things used by setuptools
 /dist/
-
-# Python egg metadata, regenerated from source files by setuptools.
+/.eggs/
+/build/
 /*.egg-info
 
 # virtualenv
