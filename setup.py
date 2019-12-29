@@ -25,4 +25,5 @@ setup(
         "Topic :: Text Processing",
     ],
     python_requires=">=3.7",
+    setup_requires=["wheel"],
 )
