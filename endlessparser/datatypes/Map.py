@@ -64,7 +64,7 @@ class SystemNode(HasName, HasPosition, HasObjects, HasMusic, HasGovernment):
     def planets(self) -> List[str]:
         l = []
         for object in self.objects():
-            if object.tokens: l.append(child.tokens_as_string())
+            if object.tokens: l.append(object.tokens_as_string())
             for station in object.objects():
                 if station.tokens: l.append(station.tokens_as_string())
         return l
