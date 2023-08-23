@@ -60,10 +60,15 @@ class SystemNode(HasName, HasPosition, HasObjects, HasMusic, HasGovernment):
 
     def links(self) -> List[str]:
         return [child.tokens_as_string() for child in self._find_children("link")]
-
-    def planets(self) -> Optional[List[str]]:
-        return [child.tokens_as_string() for child in self.objects() if child.tokens]
-
+        
+    def planets(self) -> List[str]:
+        l = []
+        for object in self.objects():
+            if object.tokens: l.append(child.tokens_as_string())
+            for station in object.objects():
+                if station.tokens: l.append(station.tokens_as_string())
+        return l
+        
     def minables(self) -> Dict[str, Tuple[float, float]]:
         d = {}
         for child in self._find_children("minables"):
